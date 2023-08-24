@@ -1,0 +1,559 @@
+﻿syntax = "proto3";
+option csharp_namespace = "Rikstoto.Service.Betting.Contracts.Protobuf";
+import "rikstoto_grpc_sharedcontracts.proto";
+import "rikstoto_grpc_sharedcontracts_bettypecode.proto";
+import "rikstoto_grpc_sharedcontracts_betsource.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+service BettingService
+{
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) { }
+    rpc GetAvailableSubscriptionTypes(GetAvailableSubscriptionTypesRequest) returns (GetAvailableSubscriptionTypesResponse) {}
+    rpc GetAvailableSubscriptionTypeAndRounds(GetAvailableSubscriptionTypeAndRoundsRequest) returns (GetAvailableSubscriptionTypeAndRoundsResponse) {}
+    rpc GetActiveSubscriptionsByType(GetActiveSubscriptionsByTypeRequest) returns (GetActiveSubscriptionsByTypeResponse) {}
+    rpc IsOpenForBetting(IsOpenForBettingRequest) returns (IsOpenForBettingResponse) {}
+    rpc GetOpeningHours(GetOpeningHoursRequest) returns (GetOpeningHoursResponse) {}
+    rpc GetBetDate(GetBetDateRequest) returns (GetBetDateResponse) {}
+    rpc GetPurchaseTransactions(GetPurchaseTransactionsRequest) returns (GetPurchaseTransactionsResponse) {}
+    rpc GetPayoutForTicket(GetPayoutForTicketRequest) returns (GetPayoutForTicketResponse) {}
+    rpc RegisterTicketPurchaseDrafts(RegisterTicketPurchaseDraftsRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc PlaceBets(PlaceBetsRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc GetProductPriceInfo(GetProductPriceInfoRequest) returns (GetProductPriceInfoResponse) {}
+    rpc RegisterSystemTicketDraft(RegisterSystemTicketDraftRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc RegisterSystemTicketDrafts(RegisterSystemTicketDraftsRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc RegisterTicketDraft(RegisterTicketDraftRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc RegisterTicketDrafts(RegisterTicketDraftsRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc GetPresaleGameRoundOrder(GetPresaleGameRoundOrderRequest) returns (GetPresaleGameRoundOrderResponse) {}
+    rpc SearchPresaleGameRoundOrders(SearchPresaleGameRoundOrdersRequest) returns (SearchPresaleGameRoundOrdersResponse) {}
+    rpc CancelPresaleTicketFromNra(CancelPresaleTicketFromNraRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc SendLinkToNmtCustomerPage(SendLinkToNmtCustomerPageRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc GenerateSubscriptionFile(GenerateSubscriptionFileRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc GenerateTurnoverReport(GenerateTurnoverReportRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc PlaceSystemBet(PlaceSystemBetRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc PlaceSystemBatchBet(PlaceSystemBatchBetRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc FindTicketSerialNumbers(FindTicketSerialNumbersRequest) returns (FindTicketSerialNumbersResponse) {}
+    rpc FindTicketDraft(FindTicketDraftRequest) returns (FindTicketDraftResponse) {}
+    rpc GetLynTotoDraft(GetLynTotoDraftRequest) returns (GetLynTotoDraftResponse) {}
+    rpc GetQuickPickSelections(GetQuickPickSelectionsRequest) returns (GetQuickPickSelectionsResponse) {}
+    rpc GetQuickPickLynBankerSelections(GetQuickPickLynBankerSelectionsRequest) returns (GetQuickPickLynBankerSelectionsResponse) {}
+    rpc GetNumberOfOpenCustomerPresaleOrders(GetNumberOfOpenCustomerPresaleOrdersRequest) returns (GetNumberOfOpenCustomerPresaleOrdersResponse) {}
+    rpc FindSystemPrintFile(FindSystemPrintFileRequest) returns (FindSystemPrintFileResponse) {}
+    rpc SendTicketReceiptAsEmail(SendTicketReceiptAsEmailRequest) returns (rikstoto.shared.protobuf.CommandResult) {}
+    rpc RegisterLynSystemTicketDraft(RegisterLynSystemTicketDraftRequest) returns (RegisterLynSystemTicketDraftResult) {}
+    rpc GetAvailableDrafts(GetAvailableDraftsRequest) returns (GetAvailableDraftsResponse) {}
+    rpc SystemPrintFileExists(SystemPrintFileExistsRequest) returns (SystemPrintFileExistsResponse) {}
+    rpc CheckIfBetCanBeDelivered(CheckIfBetCanBeDeliveredRequest) returns (CheckIfBetCanBeDeliveredResponse) {}
+}
+
+message HealthCheckRequest
+{
+    string message = 1;
+}
+
+message HealthCheckResponse
+{
+    string message = 1;
+	HealthCheckStatus status = 2;
+}
+
+message HealthCheckStatus {
+	string status = 1;
+	string endpointName = 2;
+	string description = 3;
+	repeated HealthCheckStatus details = 4;
+}
+
+enum BetMethod 
+{
+	Vanlig = 0;
+	LynBanker = 1;
+	LynToto = 2;
+	LynSystem = 3;
+	System = 4;
+	LynBundle = 5;
+	LynShare = 6;
+	Eksperten = 7;
+	MultiDay = 8;
+	Paalag = 9;
+	ShareGame = 10;
+}
+
+message GetAvailableSubscriptionTypesRequest {
+}
+
+message GetAvailableSubscriptionTypesResponse {
+    repeated BetSubscriptionType subscriptionTypes = 1;
+}
+
+message GetActiveSubscriptionsByTypeRequest {
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 1;
+	BetMethod betMethod = 2;
+	DayOfWeek dayOfWeek = 3;
+    repeated string betSubscriptionCorrelationIds = 4;
+}
+
+message GetActiveSubscriptionsByTypeResponse {
+	repeated BetSubscription subscriptions = 1;
+}
+
+message BetSubscription {
+    int32 betSubscriptionId = 1;
+    BetSubscriptionType betSubscriptionType = 2;
+    rikstoto.shared.protobuf.Money amount = 3;
+	google.protobuf.Timestamp startedAt = 4;
+	google.protobuf.Timestamp endedAt = 5;
+    bool skipNextRound = 6;
+	rikstoto.shared.protobuf.betsource.BetSource originatedFrom = 7;
+    google.protobuf.Timestamp lastPlayed = 8;
+    string betSubscriptionCorrelationId = 9;
+}
+
+message BetSubscriptionType {
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 1;
+    BetMethod betMethod = 2;
+    DayOfWeek dayOfWeek = 3;
+}
+
+enum DayOfWeek {
+    Sunday = 0;
+    Monday = 1;
+    Tuesday = 2;
+    Wednesday = 3;
+    Thursday = 4;
+    Friday = 5;
+    Saturday = 6;
+}
+
+message GetAvailableSubscriptionTypeAndRoundsRequest {
+}
+
+message GetAvailableSubscriptionTypeAndRoundsResponse {
+    repeated BetSubscriptionTypeAndRound betSubscriptionTypesAndRounds = 1;
+}
+
+message BetSubscriptionTypeAndRound {
+	rikstoto.shared.protobuf.RaceDayKey occursOnRaceDay = 1;
+	BetSubscriptionType typeOfSubscription = 2;
+}
+
+message IsOpenForBettingRequest {
+}
+
+message IsOpenForBettingResponse {
+    bool isOpenForBet = 1;
+}
+
+message GetOpeningHoursRequest {
+}
+
+message GetOpeningHoursResponse {
+	google.protobuf.Timestamp internetOpeningTime = 1;
+	google.protobuf.Timestamp internetClosingTime = 2;
+}
+
+message GetBetDateRequest {
+}
+
+message GetBetDateResponse {
+	rikstoto.shared.protobuf.Date betDate = 1;       
+}
+
+message GetPurchaseTransactionsRequest {
+	string purchaseId = 1;
+}
+
+message GetPurchaseTransactionsResponse {
+	repeated PurchaseTransaction transactions = 1;
+}
+
+message PurchaseTransaction {
+	string purchaseId = 1;
+	rikstoto.shared.protobuf.CustomerKey customer = 2;
+	rikstoto.shared.protobuf.Money amount = 3;
+	google.protobuf.Timestamp addedTime = 4;
+	string typeOfTransaction = 5;
+	string description = 6;
+	string transactionStatus = 7;
+}
+
+message GetPayoutForTicketRequest {
+    string ticketSerialNumber = 1;
+}
+
+message GetPayoutForTicketResponse {
+    TicketPayout ticketPayout = 1;
+}
+
+message TicketPayout {
+    rikstoto.shared.protobuf.Money amount = 1;
+    bool includesWinnings = 2;
+    bool includesRefunds = 3;
+    bool payIsOpen = 4;
+}
+
+message RegisterTicketPurchaseDraftsRequest {
+	string purchaseId = 1;
+	rikstoto.shared.protobuf.CustomerKey customer = 2;
+    rikstoto.shared.protobuf.AgentKey agentKey = 3;
+    rikstoto.shared.protobuf.TrackKey ownerTrack = 4;
+    repeated string betDataStrings = 5;
+    rikstoto.shared.protobuf.betsource.BetSource originatedFrom = 6;
+}
+
+message PlaceBetsRequest {
+	string purchaseId = 1;
+	rikstoto.shared.protobuf.CustomerKey customer = 2;
+}
+
+message GetProductPriceInfoRequest {
+}
+
+message GetProductPriceInfoResponse {
+    repeated ProductPriceInfo priceInfo = 1;
+}
+
+message ProductPriceInfo {
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 1;
+	BetMethod BetMethod = 2;
+	rikstoto.shared.protobuf.Money minPrice = 3;
+	rikstoto.shared.protobuf.Money superMinPrice = 4;
+	rikstoto.shared.protobuf.Money maxPrice = 5;
+	rikstoto.shared.protobuf.Money  regularPriceStep = 6;
+    repeated rikstoto.shared.protobuf.Money predefinedPrices = 7;
+    repeated MultiDayPrice multiDayPrices = 8;
+    bool isFixed = 9;
+    FeeInfo feeInfo = 10;
+	rikstoto.shared.protobuf.Money superPriceStep = 11;
+    repeated rikstoto.shared.protobuf.Money predefinedSuperPrices = 12;
+	rikstoto.shared.protobuf.Money defaultRowPrice = 13;
+	rikstoto.shared.protobuf.Money defaultSuperRowPrice = 14;
+}
+
+message MultiDayPrice {
+    int32 day = 1;
+    rikstoto.shared.protobuf.Money price = 2;
+}
+
+message FeeInfo {
+    int32 totalSteps = 1;
+    rikstoto.shared.protobuf.Money stepAmount = 2;
+    rikstoto.shared.protobuf.Money stepFee = 3;
+}
+
+message RegisterSystemTicketDraftRequest {
+    string draftReference = 1;
+    string fileName = 4;
+    bytes fileContent = 5;
+    rikstoto.shared.protobuf.AgentKey agent = 6;
+}
+
+message RegisterSystemTicketDraftsRequest {
+	repeated string draftReferences = 1;
+	string fileName = 2;
+	bytes fileContent = 3;
+	rikstoto.shared.protobuf.AgentKey agent = 4;
+}
+
+message RegisterTicketDraftRequest {
+    string draftReference = 1;
+    rikstoto.shared.protobuf.RaceDayKey raceDay = 2;
+    rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 3;
+    string betData = 4;
+		rikstoto.shared.protobuf.AgentKey agent = 5;
+}
+
+message RegisterTicketDraftsRequest {
+	repeated string draftReferences = 1;
+	rikstoto.shared.protobuf.RaceDayKey raceDay = 2;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 3;
+	string betData = 4;
+	rikstoto.shared.protobuf.AgentKey agent = 5;
+}
+
+message GetPresaleGameRoundOrderRequest {
+    string orderSerialNumber = 1;
+}
+
+message GetPresaleGameRoundOrderResponse {
+	PresaleGameRoundOrder order = 1;
+}
+
+message SearchPresaleGameRoundOrdersRequest {
+	string orderSerialNumber = 1;
+	rikstoto.shared.protobuf.AgentKey agent = 2;
+	google.protobuf.Timestamp orderedAfter = 3;
+	google.protobuf.Timestamp raceDay = 4;
+	int32 price = 5;
+	int32 windowNumber = 6;
+}
+
+message SearchPresaleGameRoundOrdersResponse {
+    repeated PresaleGameRoundOrder orders = 1;
+}
+
+message PresaleGameRoundOrder {
+	PresaleGameRound presaleGameRound = 1;
+	rikstoto.shared.protobuf.CustomerKey customer = 2;
+	BetMethod betMethod = 3;
+	rikstoto.shared.protobuf.Money amount = 4;
+	google.protobuf.Timestamp ordered = 5;
+	string orderSerialNumber = 6;
+	PresaleOrderStatus status = 7;
+	string ticketSerialNumber = 8;
+	rikstoto.shared.protobuf.AgentKey sellingAgent = 9;
+	int32 sellingAgentSublocation = 10;
+	rikstoto.shared.protobuf.betsource.BetSource saleOriginatedFrom = 11;
+	bool canBeCancelled = 12;
+}
+
+message PresaleGameRound {
+	google.protobuf.Timestamp raceDate = 1;
+	google.protobuf.Timestamp presaleStart = 2;
+	google.protobuf.Timestamp timeWhenPresalesShouldBeProcessed = 3;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 4;
+	rikstoto.shared.protobuf.RaceKey raceKey = 5;
+	string trackName = 6;
+}
+
+enum PresaleOrderStatus {
+	PresaleUnknown = 0;
+    PresaleOrdered = 1;
+    PresaleSold = 2;
+    PresaleCancelling = 3;
+    PresaleCancelled = 4;
+	PresaleAbandoned = 5;
+	PresaleFailed = 6;
+}
+
+message CancelPresaleTicketFromNraRequest {
+    string orderSerialNumber = 1;
+}
+
+message SendLinkToNmtCustomerPageRequest {
+	rikstoto.shared.protobuf.CustomerKey customer = 1;
+}
+
+message GenerateSubscriptionFileRequest {
+	google.protobuf.Timestamp date = 1;
+}
+
+message GenerateTurnoverReportRequest {
+	google.protobuf.Timestamp date = 1;
+}
+
+message PlaceSystemBetRequest {
+	string purchaseId = 1;
+	string draftReference = 2;
+	rikstoto.shared.protobuf.CustomerKey customer = 3;
+	rikstoto.shared.protobuf.TrackKey ownerTrack = 4;
+	rikstoto.shared.protobuf.AgentKey sellingAgent = 5;
+}
+
+message PlaceSystemBatchBetRequest {
+	string purchaseId = 1;
+	string draftReference = 2;
+	rikstoto.shared.protobuf.CustomerKey customer = 3;
+	rikstoto.shared.protobuf.TrackKey ownerTrack = 4;
+	rikstoto.shared.protobuf.AgentKey sellingAgent = 5;
+}
+
+message FindTicketSerialNumbersRequest {
+	string purchaseId = 1;
+}
+
+message FindTicketSerialNumbersResponse {
+	repeated string ticketSerialNumbers = 1;
+}
+
+message FindTicketDraftRequest {
+	string draftReference = 1;
+}
+
+message FindTicketDraftResponse {
+	string draftReference = 1;
+	google.protobuf.Timestamp saveTime = 2;
+	string betData = 3;
+	rikstoto.shared.protobuf.AgentKey agentKey = 4;
+}
+
+message GetLynTotoDraftRequest {
+	rikstoto.shared.protobuf.RaceDayKey raceDay = 1;
+	int32 firstRaceNumber = 2;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 3;
+	BetMethod betMethod = 4;
+	rikstoto.shared.protobuf.Money maxAmount = 5;
+	rikstoto.shared.protobuf.Money rowPrice = 6;
+}
+
+message GetLynTotoDraftResponse {
+	rikstoto.shared.protobuf.Money rowPrice = 1;
+	repeated ConfirmedSelection selections = 2;
+}
+
+message ConfirmedSelection {
+	int32 raceNumber = 1;
+	int32 legNumber = 2;
+	int32 selectionIndex = 3;
+	repeated int32 marks = 4;
+	repeated int32 customerMarks = 5;
+	bool autoGenerated = 6;
+	bool noAutoGeneration = 7;
+}
+
+message GetQuickPickSelectionsRequest {
+	rikstoto.shared.protobuf.RaceDayKey raceDay = 1;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 2;
+	int32 firstRaceNumber = 3;
+	rikstoto.shared.protobuf.Money maxAmount = 4;
+}
+
+message GetQuickPickSelectionsResponse {
+	rikstoto.shared.protobuf.Money totalCost = 1;
+	rikstoto.shared.protobuf.Money totalFee = 2;
+	repeated QuickPickTicket tickets = 3;
+}
+
+message QuickPickTicket {
+	int32 ticketNumber = 1;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 2;
+	rikstoto.shared.protobuf.Money ticketCost = 3;
+	rikstoto.shared.protobuf.Money sellFee = 4;
+	rikstoto.shared.protobuf.Money costPerCombination = 5;
+	repeated QuickPickSelections selectionFields = 6;
+}
+
+message QuickPickSelections {
+	int32 raceNumber = 1;
+	int32 legNumber = 2;
+	int32 selectionFieldNumber = 3;
+	repeated int32 marks = 4;
+}
+
+message GetQuickPickLynBankerSelectionsRequest {
+	rikstoto.shared.protobuf.RaceDayKey raceDay = 1;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 2;
+	int32 firstRaceNumber = 3;
+	rikstoto.shared.protobuf.Money maxAmount = 4;
+	repeated CustomerSelections customerSelections = 5;
+}
+
+message GetQuickPickLynBankerSelectionsResponse {
+	rikstoto.shared.protobuf.Money actualPrice = 1;
+	rikstoto.shared.protobuf.Money sellFee = 2;
+	rikstoto.shared.protobuf.Money rowPrice = 3;
+	repeated QuickPickLynBankerSelections selectionFields = 4;
+}
+
+message CustomerSelections {
+	int32 selectionFieldNumber = 1;
+	repeated int32 customerMarks = 2;
+	bool noAutoGeneration = 3;
+}
+
+message QuickPickLynBankerSelections {
+	int32 raceNumber = 1;
+	int32 legNumber = 2;
+	int32 selectionFieldNumber = 3;
+	repeated int32 marks = 4;
+	repeated int32 customerMarks = 5;
+	bool autoGenerated = 6;
+	bool noAutoGeneration = 7;
+}
+
+message GetNumberOfOpenCustomerPresaleOrdersRequest {
+	rikstoto.shared.protobuf.CustomerKey customer = 1;
+}
+
+message GetNumberOfOpenCustomerPresaleOrdersResponse {
+	int32 numberOfOrders = 1;
+}
+
+message FindSystemPrintFileRequest {
+	string systemTicketReference = 1;
+}
+
+message FindSystemPrintFileResponse {
+	string systemTicketReference = 1;
+	int32 fileId = 2;
+	bytes fileContent = 3;
+	SystemPrintFileType typeOfFile = 4;
+}
+
+enum SystemPrintFileType
+{
+	Html = 0;
+	Pdf = 1;
+}
+
+message SendTicketReceiptAsEmailRequest {
+	string ticketSerialNumber = 1;
+	string emailAddress = 2;
+}
+
+message RegisterLynSystemTicketDraftRequest {
+	string draftReference = 1;
+	rikstoto.shared.protobuf.CustomerKey customer = 2;
+	rikstoto.shared.protobuf.AgentKey agent = 3;
+	rikstoto.shared.protobuf.RaceDayKey raceDay = 4;
+	rikstoto.shared.protobuf.bettypecode.BetTypeCode product = 5;
+	rikstoto.shared.protobuf.Money maxAmount = 6;
+	int32 raceNumber = 7;
+}
+
+message RegisterLynSystemTicketDraftResult {
+	int32 numberOfTickets = 1;
+}
+
+message GetAvailableDraftsRequest {
+	string draftReference = 1;
+}
+
+message GetAvailableDraftsResponse {
+	bool ticketDraftExists = 1;
+	bool systemTicketDraftExists = 2;
+}
+
+message SystemPrintFileExistsRequest {
+	string systemTicketReference = 1;
+}
+
+message SystemPrintFileExistsResponse {
+	bool exists = 1;
+}
+
+message CheckIfBetCanBeDeliveredRequest {
+	string betDataString = 1;
+}
+
+message CheckIfBetCanBeDeliveredResponse {
+	bool canBeDelivered = 1;
+	BetDeliveryCheckResult betDeliveryCheckResult = 2;
+}
+
+enum BetDeliveryCheckResult
+{
+	CanBeDelivered = 0;
+	BetDataStringCouldNotBeParsed = 1;
+	UnexpectedErrorWhileChecking = 2;
+	BetMethodNotSupported = 3;
+	ClosedForBetting = 4;
+	NoSuchProgram = 5;
+	NoSuchPool = 6;
+	PoolIsClosed = 7;
+	BetMethodNotAvailableForPool = 8;
+	RowPriceIsMissing = 9;
+	RowPriceTooLow = 10;
+	RowPriceTooHigh = 11;
+	InvalidRowPrice = 12;
+	MaxPriceIsMissing = 13;
+	MaxPriceTooLow = 14;
+	MissingMarks = 15;
+	MarkOutsideValidRange = 16;
+	MarkOnScratchedNotAllowed = 17;
+	NoMarksForOwnGame = 18;
+	OwnGameInEveryLeg = 19;
+	TooManyMarksForPrice = 20;
+	RepeatingSingleMarks = 21;
+	NoRoundHorsesAndOneCombination = 22;
+}

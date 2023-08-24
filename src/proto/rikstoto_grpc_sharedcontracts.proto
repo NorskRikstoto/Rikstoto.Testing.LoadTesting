@@ -1,0 +1,65 @@
+﻿syntax = "proto3";
+
+package rikstoto.shared.protobuf;
+
+option csharp_namespace = "Rikstoto.Grpc.SharedContracts.Protobuf";
+
+message CommandResult {
+	bool success = 1;
+	string message = 2;
+	int32 statusCode = 3;
+	string errorCode = 4;
+}
+
+message HealthCheckResult {
+	string message = 1;
+	string endpointName = 2;
+	HealthCheckStatus status = 3;
+	repeated HealthCheckResult details = 4;
+}
+
+enum HealthCheckStatus {
+	Healthy = 0;
+	Unhealthy = 1;
+}
+
+message Money {
+    int64 amount = 1;
+}
+
+message CustomerKey {
+    int32 customerId = 1;
+}
+
+message AgentKey {
+	string agentId = 1;
+}
+
+message TrackKey {
+	string code = 1;
+	string organizationCode = 2;
+}
+
+message RaceDayKey {
+	string key = 1;
+}
+
+message RaceKey {
+	RaceDayKey raceDay = 1;
+	int32 raceNumber = 2;
+}
+
+message Date {
+	int32 year = 1;
+	int32 month = 2;
+	int32 day = 3;
+}
+
+message DecimalValue {
+  int64 units = 1;
+  int32 nanos = 2;
+}
+
+message PurchaseId {
+	string Id = 1;
+}

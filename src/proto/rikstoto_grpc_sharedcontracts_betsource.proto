@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+package rikstoto.shared.protobuf.betsource;
+
+option csharp_namespace = "Rikstoto.Grpc.SharedContracts.Protobuf.BetSource";
+
+enum BetSource {
+	undefined = 0;
+	internet = 1;
+	mobil = 2;
+	agent = 3;
+	track = 4;
+	supermarket = 5;
+	caravan = 6;
+	subscription = 7;
+	multiWeek = 8;
+}

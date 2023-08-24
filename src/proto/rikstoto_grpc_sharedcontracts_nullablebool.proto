@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+
+package rikstoto.shared.protobuf.nullablebool;
+
+option csharp_namespace = "Rikstoto.Grpc.SharedContracts.Protobuf.NullableBool";
+
+enum NullableBool {
+	unknown = 0;
+	yes = 1;
+	no = 2;
+}
+        

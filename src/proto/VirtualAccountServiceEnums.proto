@@ -1,0 +1,66 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Rikstoto.Service.Accounting.Contracts.Protobuf";
+import "rikstoto_grpc_sharedcontracts.proto";
+import "google/protobuf/timestamp.proto";
+
+enum TransactionStatus
+{
+	TransactionStatusUnknown = 0;
+	Active = 1;
+	InActive = 2;
+	ReadyForPayout = 3;
+	Transferred = 4;
+	PaidOut = 5;
+	ActiveNotPosted = 6;
+	Returned = 7;
+	UnderProcessing = 8;
+	EodProcessing = 9;
+	TransferFailed = 10;
+}
+
+enum TransactionType
+{
+	TransactionTypeUnknown =0;
+	Bet = 1;
+	Reservation = 2;
+	Deposit = 3;
+	Withdrawal = 4;
+	Prize = 5;
+	WronglyPaidPrize = 6;
+	SystemBet = 7;
+	Deleted = 8;
+	Other = 9;
+	AdminFee = 10;
+	CardDeposit = 11;
+	CreditedCard = 12;
+	MCommWithdrawal = 13;
+	RD = 14;
+	Favourite = 15;
+	HiddenActive = 16;
+	ExpertGamePurchase = 17;
+	ExpertGamePayback = 18;
+	WinningWithdrawal = 19;
+	TeamGamePurchase = 20;
+	TeamGamePayback = 21;
+	TeamGameLeaguePrize = 22;
+	PresalePurchase = 23;
+	PresalePayback = 24;
+	AgentBetPurchase = 25;
+	AgentBetRefund = 26;
+	AgentCardDeposit = 27;
+	AgentCashDeposit = 28;
+	AgentCashWithdrawal = 29;
+	FundTransferFrom = 30;
+	FundTransferTo = 31;
+	StoppedWithdrawal = 50;
+}
+
+enum DebetCredit
+{
+	DebetCreditUnknown = 0;
+	CreditCustomer = 1;
+	DebetCustomer = 2;
+	Reserved = 3;
+	DebetCreditSystemBet = 4;
+}

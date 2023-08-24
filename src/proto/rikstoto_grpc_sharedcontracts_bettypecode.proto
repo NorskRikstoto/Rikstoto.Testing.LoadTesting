@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+package rikstoto.shared.protobuf.bettypecode;
+
+option csharp_namespace = "Rikstoto.Grpc.SharedContracts.Protobuf.BetTypeCode";
+
+enum BetTypeCode {
+	undefined = 0;
+	VP = 1;
+	V = 2;
+    P = 3;
+    Duo = 4;
+    T = 5;
+    DD = 6;
+    V4 = 7;
+    V5 = 8;
+    V5B = 9;
+    V64 = 10;
+    V65 = 11;
+    V75 = 12;
+    V76 = 13;
+    TV = 14;
+    QPlus = 15;
+    V86 = 16;
+}
+        
