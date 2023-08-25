@@ -1,9 +1,9 @@
 SET NOCOUNT ON
 DECLARE @firstCustomer int = 8000001
-DECLARE @lastCustomer int = @firstCustomer + 10
+DECLARE @lastCustomer int = @firstCustomer + 1
 
-DECLARE @today DATETIME = GETDATE()
-DECLARE @todayUTC DATETIME = GETUTCDATE()
+DECLARE @today DATETIME = '2022-01-01 09:00'
+DECLARE @todayUTC DATETIME = '2022-01-01 07:00'
 
 DECLARE @customerId int = @firstCustomer
 
