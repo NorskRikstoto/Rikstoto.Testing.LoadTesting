@@ -51,14 +51,14 @@ BEGIN TRANSACTION AddLoadTestCustomers
         BEGIN
             DELETE BettingService.dbo.BetLimitDay WHERE  Customer = @customerId
         END
-        INSERT INTO BettingService.dbo.BetLimitDay (Customer, Amount,ValidFrom,AddedAt,IsDefault) VALUES (@customerId, 20000, @today, @today, 0)
+        INSERT INTO BettingService.dbo.BetLimitDay (Customer, Amount,ValidFrom,AddedAt,IsDefault) VALUES (@customerId, 100000000, @today, @today, 0)
 
 
         IF  EXISTS (SELECT Id FROM BettingService.dbo.BetLimitMonth WHERE Customer = @customerId)
         BEGIN
             DELETE BettingService.dbo.BetLimitMonth WHERE  Customer = @customerId
         END
-        INSERT INTO BettingService.dbo.BetLimitMonth (Customer, Amount,ValidFrom,AddedAt,IsDefault) VALUES (@customerId, 20000, @today, @today, 0)
+        INSERT INTO BettingService.dbo.BetLimitMonth (Customer, Amount,ValidFrom,AddedAt,IsDefault) VALUES (@customerId, 100000000, @today, @today, 0)
 
         IF  EXISTS (SELECT Id FROM BettingService.dbo.BetLimitSetting WHERE Customer = @customerId)
         BEGIN
