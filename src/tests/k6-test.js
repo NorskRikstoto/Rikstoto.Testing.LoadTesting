@@ -21,13 +21,13 @@ export let options = {
 }
 
 export default () => {
-  betLimitsService.connect("test3internalservices.r22test.local:9235", {
+  betLimitsService.connect(__ENV.env + "internalservices.r22test.local:9235", {
     plaintext: true,
   });
-  bettingService.connect("test3internalservices.r22test.local:9235", {
+    bettingService.connect(__ENV.env + "internalservices.r22test.local:9235", {
     plaintext: true,
   });
-  virtualAccountService.connect("test3internalservices.r22test.local:9233", {
+    virtualAccountService.connect(__ENV.env + "internalservices.r22test.local:9233", {
     plaintext: true,
   });
 
@@ -35,28 +35,29 @@ export default () => {
     let purchaseId = uuidv4();
     console.log('purchaseId', purchaseId);
     let amount = {
-      amount: '200'
+      amount: '5600'
     };
     let customer = {
-      customerId: '9000427'
+      customerId: __ENV.customerId
     };
-    const betDataStrings = ['d:2022-10-22|t:BJ|g:V75|nt:1|w:1|org:NR|p:9800|f:100|pr:50|o:2|s1:2|s2:18|s3:2|s4:10|s5:6|s6:38|s7:958|l:1'];
+      const betDataStrings = ['d:2023-01-13|t:MO|g:V75|nt:1|w:1|org:NR|p:50|pr:50|o:0|s1:8196|s2:256|s3:656|s4:32|s5:580|s6:258|s7:1060'];
 
     AddBetLimitReservation(customer, purchaseId, amount);
-    sleep(1);
+    sleep(.5);
     RegisterTicketPurchaseDrafts(customer, purchaseId, betDataStrings);
-    sleep(1);
+    sleep(.5);
     Reserve(customer, purchaseId, amount);
-    sleep(1);
+    sleep(.5);
     PlaceBets(customer, purchaseId);
   });
 
   betLimitsService.close();
-  bettingService.close;
+  bettingService.close();
   virtualAccountService.close();
 };
 
 function AddBetLimitReservation(customer, purchaseId, amount) {
+  
   const addBetLimitReservationRequest = {
     customer: customer,
     amount: amount,
@@ -84,7 +85,8 @@ function RegisterTicketPurchaseDrafts(customer, purchaseId, betDataStrings) {
     },
     purchaseId: purchaseId,
     betDataStrings: betDataStrings,
-    ownerTrack: {}
+    ownerTrack: {},
+    originatedFrom: 1
   };
 
   const registerTicketPurchaseDraftsResponse = bettingService.invoke(

@@ -9,17 +9,57 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="tests\proto\BetLimitsService.proto" />
+    <None Remove="tests\proto\BettingService.proto" />
+    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts.proto" />
+    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_betsource.proto" />
+    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_bettypecode.proto" />
+    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_nullablebool.proto" />
+    <None Remove="tests\proto\VirtualAccountService.proto" />
+    <None Remove="tests\proto\VirtualAccountServiceContracts.proto" />
+    <None Remove="tests\proto\VirtualAccountServiceEnums.proto" />
     <None Remove="scripts\k6-check.js" />
-    <None Remove="scripts\k6-placebetwithaccountpayment-grpc-test.js" />
+    <None Remove="scripts\k6-test.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="scripts\k6-check.js">
+    <EmbeddedResource Include="tests\proto\BetLimitsService.proto">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="scripts\k6-placebetwithaccountpayment-grpc-test.js">
+    <EmbeddedResource Include="tests\proto\BettingService.proto">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_betsource.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_bettypecode.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_nullablebool.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\VirtualAccountService.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\VirtualAccountServiceContracts.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\proto\VirtualAccountServiceEnums.proto">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\k6-check.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tests\k6-test.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="scripts\" />
   </ItemGroup>
 
 </Project>
