@@ -18,8 +18,6 @@
     <None Remove="tests\proto\VirtualAccountService.proto" />
     <None Remove="tests\proto\VirtualAccountServiceContracts.proto" />
     <None Remove="tests\proto\VirtualAccountServiceEnums.proto" />
-    <None Remove="scripts\k6-check.js" />
-    <None Remove="scripts\k6-test.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,10 +54,6 @@
     <EmbeddedResource Include="tests\k6-test.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="scripts\" />
   </ItemGroup>
 
 </Project>
