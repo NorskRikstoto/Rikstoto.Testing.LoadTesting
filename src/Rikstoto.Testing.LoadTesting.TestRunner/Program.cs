@@ -15,11 +15,11 @@ builder.Services.AddTransient<IAccountingService, AccountingService>();
 
 using IHost host = builder.Build();
 var nrOfCores = 8.0; //check in Task Manager under the Performance tab
-var nrOfRuns = 40;
+var nrOfRuns = 8;
 
 for (int i = 0; i <= nrOfRuns;  i++)
 {
-    var startingCustomerId = 80000001;
+    var startingCustomerId = 8000001;
     var nrOfTickets = 25;
     var count = i * nrOfTickets;
     var numbers = Enumerable.Range(startingCustomerId + i, Math.Max(count , nrOfTickets));
@@ -48,11 +48,11 @@ for (int i = 0; i <= nrOfRuns;  i++)
         };
         var betDataList = new List<BetData>
         {
-            BetData.Parse("d:2023-09-06|t:MO|g:V75|nt:1|w:1|org:NR|p:50|pr:50|o:0|s1:130|s2:32|s3:1040|s4:144|s5:8|s6:16|s7:76")
+            BetData.Parse("d:2023-01-18|t:BJ|g:V75|nt:1|w:1|org:NR|p:4900|pr:50|o:2|s1:10|s2:2|s3:46|s4:2|s5:2|s6:102|s7:22|l:1")
         };
         var totalCost = new Money
         {
-            Amount = 5600
+            Amount = 5000
         };
         var agentKey = new AgentKey
         {
