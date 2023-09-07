@@ -19,7 +19,7 @@ var nrOfRuns = 8;
 
 for (int i = 0; i <= nrOfRuns;  i++)
 {
-    var startingCustomerId = 8000001;
+    var startingCustomerId = 8_000_001;
     var nrOfTickets = 25;
     var count = i * nrOfTickets;
     var numbers = Enumerable.Range(startingCustomerId + i, Math.Max(count , nrOfTickets));
@@ -60,13 +60,44 @@ for (int i = 0; i <= nrOfRuns;  i++)
         };
 
         var betLimitResult = betLimitsServiceClient.AddBetLimitReservation(customerId, totalCost, purchaseId).Result;
-        Console.WriteLine($"customerId: {customerId} AddBetLimitReservation: {betLimitResult}");
+        if (betLimitResult.Success)
+            Console.WriteLine($"customerId: {customerId} AddBetLimitReservation OK");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"customerId: {customerId} AddBetLimitReservation failed: {betLimitResult.Message}");
+            Console.ResetColor();
+        }
+        
         var registerTicketPurchaseResult = bettingServiceClient.RegisterTicketPurchaseDrafts(customerId, agentKey, purchaseId, betDataList, null).Result;
-        Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts: {registerTicketPurchaseResult}");
+        if (registerTicketPurchaseResult.Success)
+            Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts OK");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts failed: {betLimitResult.Message}");
+            Console.ResetColor();
+        }
+
         var reserveResult = accountServiceClient.Reserve(customerId, totalCost, purchaseId, false).Result;
-        Console.WriteLine($"customerId: {customerId} Reserve: {reserveResult}");
+        if (reserveResult.Success)
+            Console.WriteLine($"customerId: {customerId} Reserve OK");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"customerId: {customerId} Reserve failed: {betLimitResult.Message}");
+            Console.ResetColor();
+        }
+        
         var placeBetsResult = bettingServiceClient.PlaceBets(customerId, purchaseId).Result;
-        Console.WriteLine($"customerId: {customerId} PlaceBets: {placeBetsResult}");
+        if (placeBetsResult.Success)
+            Console.WriteLine($"customerId: {customerId} PlaceBets OK");
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"customerId: {customerId} PlaceBets failed: {betLimitResult.Message}");
+            Console.ResetColor();
+        }
     }
 
     Thread.Sleep(1000);
