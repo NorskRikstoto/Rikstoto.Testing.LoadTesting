@@ -40,7 +40,7 @@ export default () => {
     let customer = {
       customerId: __ENV.customerId
     };
-      const betDataStrings = ['d:2023-01-13|t:MO|g:V75|nt:1|w:1|org:NR|p:50|pr:50|o:0|s1:8196|s2:256|s3:656|s4:32|s5:580|s6:258|s7:1060'];
+      const betDataStrings = ['d:2023-01-16|t:MO|g:V75|nt:1|w:1|org:NR|p:50|pr:1000|o:0|s1:16384|s2:256|s3:16|s4:512|s5:32|s6:128|s7:1056'];
 
     AddBetLimitReservation(customer, purchaseId, amount);
     sleep(.5);

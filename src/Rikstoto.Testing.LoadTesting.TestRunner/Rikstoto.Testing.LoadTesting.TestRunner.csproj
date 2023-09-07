@@ -3,9 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>test_runner</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,6 +54,29 @@
     <EmbeddedResource Include="tests\k6-test.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.56.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Rikstoto.Grpc.Infrastructure" Version="5.0.0" />
+    <PackageReference Include="Rikstoto.Grpc.SharedContracts" Version="1.23.0" />
+    <PackageReference Include="Rikstoto.Monitoring.HealthCheck" Version="3.0.0" />
+    <PackageReference Include="Rikstoto.Service.SharedContracts" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Rikstoto.Common.BetData">
+      <HintPath>..\..\..\beta.rikstoto.no\src\Rikstoto.Toto\bin\Rikstoto.Common.BetData.dll</HintPath>
+    </Reference>
+    <Reference Include="Rikstoto.Service.Accounting.ProtobufContracts">
+      <HintPath>..\..\..\beta.rikstoto.no\src\Rikstoto.Toto\bin\Rikstoto.Service.Accounting.ProtobufContracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Rikstoto.Service.Betting.ProtobufContracts">
+      <HintPath>..\..\..\beta.rikstoto.no\src\Rikstoto.Toto\bin\Rikstoto.Service.Betting.ProtobufContracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
