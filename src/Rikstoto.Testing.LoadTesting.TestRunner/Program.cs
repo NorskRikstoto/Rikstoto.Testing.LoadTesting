@@ -14,9 +14,10 @@ builder.Services.AddTransient<IBetLimitsService, BetLimitsService>();
 builder.Services.AddTransient<IAccountingService, AccountingService>();
 
 using IHost host = builder.Build();
-var nrOfCores = 8.0;
+var nrOfCores = 8.0; //check in Task Manager under the Performance tab
+var nrOfRuns = 40;
 
-for (int i = 0; i <= 40;  i++)
+for (int i = 0; i <= nrOfRuns;  i++)
 {
     var startingCustomerId = 80000001;
     var nrOfTickets = 25;
@@ -47,7 +48,7 @@ for (int i = 0; i <= 40;  i++)
         };
         var betDataList = new List<BetData>
         {
-            BetData.Parse("d:2023-01-17|t:BJ|g:V75|nt:1|w:1|org:NR|p:50|pr:50|o:0|s1:2|s2:2048|s3:44|s4:524|s5:576|s6:32|s7:146")
+            BetData.Parse("d:2023-09-06|t:MO|g:V75|nt:1|w:1|org:NR|p:50|pr:50|o:0|s1:130|s2:32|s3:1040|s4:144|s5:8|s6:16|s7:76")
         };
         var totalCost = new Money
         {
@@ -59,13 +60,13 @@ for (int i = 0; i <= 40;  i++)
         };
 
         var betLimitResult = betLimitsServiceClient.AddBetLimitReservation(customerId, totalCost, purchaseId).Result;
-        Console.WriteLine($"AddBetLimitReservation: {betLimitResult}");
+        Console.WriteLine($"customerId: {customerId} AddBetLimitReservation: {betLimitResult}");
         var registerTicketPurchaseResult = bettingServiceClient.RegisterTicketPurchaseDrafts(customerId, agentKey, purchaseId, betDataList, null).Result;
-        Console.WriteLine($"RegisterTicketPurchaseDrafts: {registerTicketPurchaseResult}");
+        Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts: {registerTicketPurchaseResult}");
         var reserveResult = accountServiceClient.Reserve(customerId, totalCost, purchaseId, false).Result;
-        Console.WriteLine($"Reserve: {reserveResult}");
+        Console.WriteLine($"customerId: {customerId} Reserve: {reserveResult}");
         var placeBetsResult = bettingServiceClient.PlaceBets(customerId, purchaseId).Result;
-        Console.WriteLine($"PlaceBets: {placeBetsResult}");
+        Console.WriteLine($"customerId: {customerId} PlaceBets: {placeBetsResult}");
     }
 
     Thread.Sleep(1000);
