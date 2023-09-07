@@ -1,4 +1,5 @@
-﻿using Rikstoto.Common.BetData.DomainModels;
+﻿using System.Drawing;
+using Rikstoto.Common.BetData.DomainModels;
 using Rikstoto.Grpc.Infrastructure.Logging;
 using Rikstoto.Grpc.SharedContracts.Protobuf;
 using Rikstoto.Toto.ServiceGateways.Grpc;
@@ -63,41 +64,25 @@ for (int i = 0; i <= nrOfRuns;  i++)
         if (betLimitResult.Success)
             Console.WriteLine($"customerId: {customerId} AddBetLimitReservation OK");
         else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"customerId: {customerId} AddBetLimitReservation failed: {betLimitResult.Message}");
-            Console.ResetColor();
-        }
+            Console.WriteLine($"customerId: {customerId} AddBetLimitReservation failed: {betLimitResult.Message}, Color.Red");
         
         var registerTicketPurchaseResult = bettingServiceClient.RegisterTicketPurchaseDrafts(customerId, agentKey, purchaseId, betDataList, null).Result;
         if (registerTicketPurchaseResult.Success)
             Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts OK");
         else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts failed: {betLimitResult.Message}");
-            Console.ResetColor();
-        }
+            Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts failed: {betLimitResult.Message}", Color.Red);
 
         var reserveResult = accountServiceClient.Reserve(customerId, totalCost, purchaseId, false).Result;
         if (reserveResult.Success)
             Console.WriteLine($"customerId: {customerId} Reserve OK");
         else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"customerId: {customerId} Reserve failed: {betLimitResult.Message}");
-            Console.ResetColor();
-        }
+            Console.WriteLine($"customerId: {customerId} Reserve failed: {betLimitResult.Message}", Color.Red);
         
         var placeBetsResult = bettingServiceClient.PlaceBets(customerId, purchaseId).Result;
         if (placeBetsResult.Success)
             Console.WriteLine($"customerId: {customerId} PlaceBets OK");
         else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"customerId: {customerId} PlaceBets failed: {betLimitResult.Message}");
-            Console.ResetColor();
-        }
+            Console.WriteLine($"customerId: {customerId} PlaceBets failed: {betLimitResult.Message}", Color.Red);
     }
 
     Thread.Sleep(1000);
