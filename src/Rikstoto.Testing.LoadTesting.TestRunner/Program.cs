@@ -19,13 +19,12 @@ var nrOfCores = 8.0; //check in Task Manager under the Performance tab
 var nrOfRunsSetup = 20;
 var nrOfRunsBets = 100;
 var fileLocation = Environment.CurrentDirectory + "\\bets.txt";
-
+var startingCustomerId = 8_000_001;
 
 void SetupReservations()
 {
     for (int i = 0; i <= nrOfRunsSetup - 1; i++)
     {
-        var startingCustomerId = 8_000_001;
         var nrOfTickets = 50;
         var count = i * nrOfTickets;
         var numbers = Enumerable.Range(startingCustomerId + count, nrOfTickets);
@@ -129,7 +128,6 @@ void DoBets(){
 
     for (int i = 0; i <= nrOfRunsBets - 1; i++)
     {
-        var startingCustomerId = 8_000_001;
         var nrOfTickets = 10;
         var count = i * nrOfTickets;
         var numbers = Enumerable.Range(startingCustomerId + count, nrOfTickets);
