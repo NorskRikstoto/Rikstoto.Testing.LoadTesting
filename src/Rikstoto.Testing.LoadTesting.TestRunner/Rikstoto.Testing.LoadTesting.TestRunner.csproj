@@ -9,54 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="tests\proto\BetLimitsService.proto" />
-    <None Remove="tests\proto\BettingService.proto" />
-    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts.proto" />
-    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_betsource.proto" />
-    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_bettypecode.proto" />
-    <None Remove="tests\proto\rikstoto_grpc_sharedcontracts_nullablebool.proto" />
-    <None Remove="tests\proto\VirtualAccountService.proto" />
-    <None Remove="tests\proto\VirtualAccountServiceContracts.proto" />
-    <None Remove="tests\proto\VirtualAccountServiceEnums.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="tests\proto\BetLimitsService.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\BettingService.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_betsource.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_bettypecode.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\rikstoto_grpc_sharedcontracts_nullablebool.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\VirtualAccountService.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\VirtualAccountServiceContracts.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\proto\VirtualAccountServiceEnums.proto">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\k6-check.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tests\k6-test.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
     <PackageReference Include="Grpc.Net.Client" Version="2.56.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
@@ -68,6 +20,12 @@
     <PackageReference Include="Rikstoto.Service.Accounting.ProtobufContracts" Version="2.3.0" />
     <PackageReference Include="Rikstoto.Service.Betting.ProtobufContracts" Version="3.15.0" />
     <PackageReference Include="Rikstoto.Service.SharedContracts" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

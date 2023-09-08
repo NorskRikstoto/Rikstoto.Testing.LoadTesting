@@ -6,6 +6,9 @@ using Rikstoto.Toto.ServiceGateways.Grpc;
 using Rikstoto.Toto.ServiceGateways.Grpc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
+using Rikstoto.Testing.LoadTesting.TestRunner;
+using Microsoft.Extensions.Options;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
@@ -13,21 +16,28 @@ builder.Services.AddSingleton<GrpcClientCreator>(new GrpcClientCreator(new Clien
 builder.Services.AddTransient<IBettingService, BettingService>();
 builder.Services.AddTransient<IBetLimitsService, BetLimitsService>();
 builder.Services.AddTransient<IAccountingService, AccountingService>();
+builder.Services.Configure<TestRunSetup>(builder.Configuration.GetSection(nameof(TestRunSetup)));
 
 using IHost host = builder.Build();
+var testRunSetup = host.Services.GetRequiredService<IOptions<TestRunSetup>>().Value;
 var nrOfCores = 8.0; //check in Task Manager under the Performance tab
-var nrOfRunsSetup = 20;
-var nrOfRunsBets = 100;
 var fileLocation = Environment.CurrentDirectory + "\\bets.txt";
-var startingCustomerId = 8_000_001;
 
 void SetupReservations()
 {
-    for (int i = 0; i <= nrOfRunsSetup - 1; i++)
+    var betLimitReservationSuccess = 0;
+    var betLimitReservationFailure = 0;
+    var registerDraftSuccess = 0;
+    var registerDraftFailure = 0;
+    var reserverSuccess = 0;
+    var reserverFailure = 0;
+
+    var stopWatch = Stopwatch.StartNew();
+    File.Delete(fileLocation);
+    for (int i = 0; i <= testRunSetup.NrOfRunsForReservations - 1; i++)
     {
-        var nrOfTickets = 50;
-        var count = i * nrOfTickets;
-        var numbers = Enumerable.Range(startingCustomerId + count, nrOfTickets);
+        var count = i * testRunSetup.NrOfReservationsPerRun;
+        var numbers = Enumerable.Range(testRunSetup.StartingCustomerId + count, testRunSetup.NrOfReservationsPerRun);
 
         Parallel.ForEach(numbers,
                         new ParallelOptions
@@ -52,9 +62,9 @@ void SetupReservations()
                 Id = Guid.NewGuid().ToString()
             };
             var betDataList = new List<BetData>
-        {
-            BetData.Parse("d:2023-01-18|t:BJ|g:V75|nt:1|w:1|org:NR|p:4900|pr:50|o:2|s1:10|s2:2|s3:46|s4:2|s5:2|s6:102|s7:22|l:1")
-        };
+            {
+                BetData.Parse(testRunSetup.BetDataString)
+            };
             var totalCost = new Money
             {
                 Amount = 5000
@@ -65,52 +75,43 @@ void SetupReservations()
             };
 
             var betLimitResult = betLimitsServiceClient.AddBetLimitReservation(customerId, totalCost, purchaseId).Result;
-            if (betLimitResult.Success)
-                Console.WriteLine($"customerId: {customerId} AddBetLimitReservation OK");
-            else
-                Console.WriteLine($"customerId: {customerId} AddBetLimitReservation failed: {betLimitResult.Message}", Color.Red);
+            Log(customerId, betLimitResult.Success, nameof(betLimitsServiceClient.AddBetLimitReservation), betLimitResult.Message, ref betLimitReservationSuccess, ref betLimitReservationFailure);
+                
 
             var registerTicketPurchaseResult = bettingServiceClient.RegisterTicketPurchaseDrafts(customerId, agentKey, purchaseId, betDataList, null).Result;
-            if (registerTicketPurchaseResult.Success)
-                Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts OK");
-            else
-                Console.WriteLine($"customerId: {customerId} RegisterTicketPurchaseDrafts failed: {registerTicketPurchaseResult.Message}", Color.Red);
+            Log(customerId, registerTicketPurchaseResult.Success, nameof(bettingServiceClient.RegisterTicketPurchaseDrafts), registerTicketPurchaseResult.Message, ref registerDraftSuccess, ref registerDraftFailure);
 
             var reserveResult = accountServiceClient.Reserve(customerId, totalCost, purchaseId, false).Result;
             if (reserveResult.Success)
             {
                 Console.WriteLine($"customerId: {customerId} Reserve OK");
-                WriteFile($"{customerId}={purchaseId.Id}{Environment.NewLine}", fileLocation);
+                WriteToFile($"{customerId}={purchaseId.Id}{Environment.NewLine}", fileLocation);
+                reserverSuccess++;
             }
             else
+            {
                 Console.WriteLine($"customerId: {customerId} Reserve failed: {reserveResult.Message}", Color.Red);
+                reserverFailure++;
+            }
         }
     }
-}
 
-void WriteFile(string fileContents, string filePathAndName)
-{
-    using (var mutex = new Mutex(false, filePathAndName.Replace("\\", "")))
-    {
-        var hasHandle = false;
-        try
-        {
-            hasHandle = mutex.WaitOne(Timeout.Infinite, false);
-            File.AppendAllText(filePathAndName, fileContents);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-        finally
-        {
-            if (hasHandle)
-                mutex.ReleaseMutex();
-        }
-    }
+    stopWatch.Stop();
+    var ts = stopWatch.Elapsed;
+
+    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+    Console.WriteLine("RunTime " + elapsedTime);
+    var totalReservations = testRunSetup.NrOfReservationsPerRun * testRunSetup.NrOfRunsForReservations;
+    Console.WriteLine($"AddBetLimitReservation{Environment.NewLine} t:{totalReservations} s:{betLimitReservationSuccess} f:{betLimitReservationFailure}");
+    Console.WriteLine($"RegisterTicketPurchaseDrafts{Environment.NewLine} t:{totalReservations} s:{registerDraftSuccess} f:{registerDraftFailure}");
+    Console.WriteLine($"Reserve{Environment.NewLine} t:{totalReservations} s: {reserverSuccess} f:{reserverFailure}");
 }
 
 void DoBets(){
+    var stopWatch = Stopwatch.StartNew();
+
     var customerDictionary = new Dictionary<string, string>();
     void ParseToDictionary(string filePathName)
     {
@@ -126,11 +127,10 @@ void DoBets(){
 
     Thread.Sleep(3000);
 
-    for (int i = 0; i <= nrOfRunsBets - 1; i++)
+    for (int i = 0; i <= testRunSetup.NrOfRunsForBets - 1; i++)
     {
-        var nrOfTickets = 10;
-        var count = i * nrOfTickets;
-        var numbers = Enumerable.Range(startingCustomerId + count, nrOfTickets);
+        var count = i * testRunSetup.NrOfBetsPerRun;
+        var numbers = Enumerable.Range(testRunSetup.StartingCustomerId + count, testRunSetup.NrOfBetsPerRun);
 
         Parallel.ForEach(numbers,
                         new ParallelOptions
@@ -163,9 +163,51 @@ void DoBets(){
         }
     }
     File.Delete(fileLocation);
+
+    stopWatch.Stop();
+    var ts = stopWatch.Elapsed;
+
+    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+    Console.WriteLine("RunTime " + elapsedTime);
 }
 
 //SetupReservations();
 //DoBets();
 
 await host.RunAsync();
+
+void WriteToFile(string fileContents, string filePathAndName)
+{
+    using var mutex = new Mutex(false, filePathAndName.Replace("\\", ""));
+    var hasHandle = false;
+    try
+    {
+        hasHandle = mutex.WaitOne(Timeout.Infinite, false);
+        File.AppendAllText(filePathAndName, fileContents);
+    }
+    catch (Exception)
+    {
+        throw;
+    }
+    finally
+    {
+        if (hasHandle)
+            mutex.ReleaseMutex();
+    }
+}
+
+void Log(int customerId, bool success, string actionName, string message, ref int successCount, ref int failerCount)
+{
+    if (success)
+    {
+        Console.WriteLine($"customerId: {customerId} {actionName} OK");
+        successCount++;
+    }
+    else
+    {
+        Console.WriteLine($"customerId: {customerId} {actionName} failed: {message}", Color.Red);
+        failerCount++;
+    }
+}

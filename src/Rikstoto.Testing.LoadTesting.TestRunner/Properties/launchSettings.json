@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Rikstoto.Testing.LoadTesting.TestRunner": {
+      "commandName": "Project",
+      "commandLineArgs": "-p 5"
+    }
+  }
+}
